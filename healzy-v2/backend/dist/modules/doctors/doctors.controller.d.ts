@@ -1,0 +1,223 @@
+import { DoctorsService } from './doctors.service';
+export declare class DoctorsController {
+    private doctors;
+    constructor(doctors: DoctorsService);
+    findAll(query: any): Promise<{
+        data: any[];
+        total: number;
+        page: number;
+        limit: number;
+        totalPages: number;
+    }>;
+    getMyProfile(user: any): Promise<{
+        user: {
+            email: string;
+            firstName: string;
+            lastName: string;
+            avatar: string;
+            phone: string;
+        };
+        schedules: {
+            id: string;
+            isAvailable: boolean;
+            createdAt: Date;
+            updatedAt: Date;
+            doctorId: string;
+            dayOfWeek: number;
+            startTime: string;
+            endTime: string;
+            slotDuration: number;
+        }[];
+        _count: {
+            appointments: number;
+            reviews: number;
+        };
+    } & {
+        id: string;
+        userId: string;
+        specialty: string;
+        specialtyRu: string | null;
+        specialtyUz: string | null;
+        experience: number;
+        bio: string | null;
+        bioRu: string | null;
+        bioUz: string | null;
+        education: string | null;
+        languages: string[];
+        workingHours: string | null;
+        isAvailable: boolean;
+        isVerified: boolean;
+        price: number;
+        currency: string;
+        documents: string[];
+        applicationStatus: import(".prisma/client").$Enums.DoctorApplicationStatus;
+        applicationNote: string | null;
+        rating: number;
+        reviewCount: number;
+        consultationCount: number;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
+    updateMyProfile(user: any, body: any): Promise<{
+        id: string;
+        userId: string;
+        specialty: string;
+        specialtyRu: string | null;
+        specialtyUz: string | null;
+        experience: number;
+        bio: string | null;
+        bioRu: string | null;
+        bioUz: string | null;
+        education: string | null;
+        languages: string[];
+        workingHours: string | null;
+        isAvailable: boolean;
+        isVerified: boolean;
+        price: number;
+        currency: string;
+        documents: string[];
+        applicationStatus: import(".prisma/client").$Enums.DoctorApplicationStatus;
+        applicationNote: string | null;
+        rating: number;
+        reviewCount: number;
+        consultationCount: number;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
+    setAvailability(user: any, isAvailable: boolean): Promise<{
+        id: string;
+        userId: string;
+        specialty: string;
+        specialtyRu: string | null;
+        specialtyUz: string | null;
+        experience: number;
+        bio: string | null;
+        bioRu: string | null;
+        bioUz: string | null;
+        education: string | null;
+        languages: string[];
+        workingHours: string | null;
+        isAvailable: boolean;
+        isVerified: boolean;
+        price: number;
+        currency: string;
+        documents: string[];
+        applicationStatus: import(".prisma/client").$Enums.DoctorApplicationStatus;
+        applicationNote: string | null;
+        rating: number;
+        reviewCount: number;
+        consultationCount: number;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
+    getMySchedule(user: any): Promise<{
+        id: string;
+        isAvailable: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+        doctorId: string;
+        dayOfWeek: number;
+        startTime: string;
+        endTime: string;
+        slotDuration: number;
+    }[]>;
+    updateSchedule(user: any, schedule: any[]): Promise<import(".prisma/client").Prisma.BatchPayload>;
+    apply(user: any, body: any): Promise<{
+        id: string;
+        userId: string;
+        specialty: string;
+        specialtyRu: string | null;
+        specialtyUz: string | null;
+        experience: number;
+        bio: string | null;
+        bioRu: string | null;
+        bioUz: string | null;
+        education: string | null;
+        languages: string[];
+        workingHours: string | null;
+        isAvailable: boolean;
+        isVerified: boolean;
+        price: number;
+        currency: string;
+        documents: string[];
+        applicationStatus: import(".prisma/client").$Enums.DoctorApplicationStatus;
+        applicationNote: string | null;
+        rating: number;
+        reviewCount: number;
+        consultationCount: number;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
+    findOne(id: string): Promise<any>;
+    getSchedule(id: string): Promise<{
+        id: string;
+        isAvailable: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+        doctorId: string;
+        dayOfWeek: number;
+        startTime: string;
+        endTime: string;
+        slotDuration: number;
+    }[]>;
+    getSlots(id: string, date: string): Promise<string[]>;
+    getReviews(id: string, page?: number, limit?: number): Promise<{
+        data: ({
+            appointment: {
+                patient: {
+                    user: {
+                        firstName: string;
+                        lastName: string;
+                        avatar: string;
+                    };
+                } & {
+                    id: string;
+                    userId: string;
+                    createdAt: Date;
+                    updatedAt: Date;
+                    bloodType: string | null;
+                    allergies: string[];
+                    chronicDiseases: string[];
+                    emergencyContact: import("@prisma/client/runtime/library").JsonValue | null;
+                    address: string | null;
+                    city: string | null;
+                    insurance: string | null;
+                };
+            } & {
+                id: string;
+                currency: string;
+                createdAt: Date;
+                updatedAt: Date;
+                doctorId: string;
+                patientId: string;
+                type: import(".prisma/client").$Enums.AppointmentType;
+                status: import(".prisma/client").$Enums.AppointmentStatus;
+                scheduledAt: Date;
+                duration: number;
+                reason: string;
+                symptoms: string[];
+                notes: string | null;
+                prescription: string | null;
+                diagnosis: string | null;
+                meetingUrl: string | null;
+                chatRoomId: string | null;
+                amount: number;
+                isPaid: boolean;
+                cancelReason: string | null;
+            };
+        } & {
+            id: string;
+            rating: number;
+            createdAt: Date;
+            updatedAt: Date;
+            doctorId: string;
+            patientId: string;
+            appointmentId: string;
+            comment: string | null;
+        })[];
+        total: number;
+        page: number;
+        limit: number;
+        totalPages: number;
+    }>;
+}
