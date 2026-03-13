@@ -2,12 +2,12 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { MessageSquare, Search, Brain, Upload, CheckCircle, Star, Calendar, Users } from 'lucide-react';
-import { useT } from '../i18n/useT';
-import { useAuthStore } from '../store';
-import { Doctors } from '../services';
-import Avatar from '../components/common/Avatar';
-import Button from '../components/common/Button';
-import Input from '../components/common/Input';
+import { useT } from '../../hooks/useT';
+import { useAuthStore } from '../../features/auth/store';
+import { Doctors } from '../../services';
+import Avatar from '../../components/Avatar';
+import Button from '../../components/Button';
+import Input from '../../components/Input';
 import styles from './DashboardPage.module.css';
 import toast from 'react-hot-toast';
 
@@ -401,3 +401,4 @@ export default function DashboardPage() {
     </div>
   );
 }
+

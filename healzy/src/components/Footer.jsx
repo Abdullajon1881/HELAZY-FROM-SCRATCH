@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Heart } from 'lucide-react';
-import { useT } from '../../i18n/useT';
+import { useT } from '../hooks/useT';
 import styles from './Footer.module.css';
 
 export default function Footer() {
@@ -43,3 +43,4 @@ export default function Footer() {
     </footer>
   );
 }
+

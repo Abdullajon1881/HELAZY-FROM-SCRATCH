@@ -5,11 +5,12 @@ import {
   Sun, Moon, Globe, Bell, Menu, X,
   LogOut, User, Settings, LayoutDashboard, Shield
 } from 'lucide-react';
-import { useAuthStore, useUIStore } from '../../store';
-import { useT } from '../../i18n/useT';
-import { LANGUAGES } from '../../i18n/translations';
-import { authAPI } from '../../api';
-import Avatar from '../common/Avatar';
+import { useAuthStore, useUIStore } from '../features/auth/store'
+import { useUIStore }   from '../features/ui/store';
+import { useT } from '../hooks/useT';
+import { LANGUAGES } from '../utils/translations';
+import { authAPI } from '../services/authApi';
+import Avatar from './Avatar';
 import styles from './Navbar.module.css';
 import toast from 'react-hot-toast';
 
@@ -236,3 +237,4 @@ export default function Navbar() {
     </header>
   );
 }
+

@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
-import { translations } from './translations';
-import { useUIStore } from '../store';
+import { translations } from '../utils/translations';
+import { useUIStore } from '../features/ui/store';
 
 export const LanguageContext = createContext(null);
 
@@ -20,3 +20,4 @@ export const useT = () => {
 
   return { t, get, language };
 };
+

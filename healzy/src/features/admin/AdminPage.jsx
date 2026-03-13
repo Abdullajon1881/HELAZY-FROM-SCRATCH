@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users, Stethoscope, Activity, Clock, Check, X, Eye, Ban, ShieldCheck, ChevronDown } from 'lucide-react';
-import { useT } from '../i18n/useT';
-import { useAuthStore } from '../store';
-import { Admin } from '../services';
-import Avatar from '../components/common/Avatar';
-import Button from '../components/common/Button';
+import { useT } from '../../hooks/useT';
+import { useAuthStore } from '../../features/auth/store';
+import { Admin } from '../../services';
+import Avatar from '../../components/Avatar';
+import Button from '../../components/Button';
 import styles from './AdminPage.module.css';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
@@ -334,3 +334,4 @@ export default function AdminPage() {
     </div>
   );
 }
+

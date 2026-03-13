@@ -2,17 +2,17 @@ import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-route
 import { Toaster } from 'react-hot-toast';
 import { AnimatePresence } from 'framer-motion';
 
-import { useAuthStore } from './store';
-import Navbar from './components/layout/Navbar';
-import Footer from './components/layout/Footer';
+import { useAuthStore } from '../features/auth/store';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
-import HomePage from './pages/HomePage';
-import { LoginPage, RegisterPage, ResetPasswordPage } from './pages/AuthPage';
-import { DoctorsPage, DoctorProfilePage } from './pages/DoctorsPage';
-import ChatPage from './pages/ChatPage';
-import AIPage from './pages/AIPage';
-import AdminPage from './pages/AdminPage';
-import DashboardPage from './pages/DashboardPage';
+import HomePage from '../features/home/HomePage';
+import { LoginPage, RegisterPage, ResetPasswordPage } from '../features/auth/AuthPage';
+import { DoctorsPage, DoctorProfilePage } from '../features/doctors/DoctorsPage';
+import ChatPage from '../features/chat/ChatPage';
+import AIPage from '../features/ai/AIPage';
+import AdminPage from '../features/admin/AdminPage';
+import DashboardPage from '../features/dashboard/DashboardPage';
 
 // ── Protected Route ──────────────────────────────────────────────────────────
 function Protected({ children, roles }) {
@@ -101,3 +101,4 @@ export default function App() {
     </BrowserRouter>
   );
 }
+

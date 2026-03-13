@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, Mic, MicOff, Volume2, VolumeX, Plus, Trash2, Image, AlertCircle } from 'lucide-react';
-import { useT } from '../i18n/useT';
-import { useAIStore } from '../store';
-import Button from '../components/common/Button';
+import { useT } from '../../hooks/useT';
+import { useAIStore } from '../../features/ai/store';
+import Button from '../../components/Button';
 import styles from './AIPage.module.css';
 
 // ─── Mock AI Response Generator ───────────────────────────────────────────────
@@ -391,3 +391,5 @@ export default function AIPage() {
     </div>
   );
 }
+
+

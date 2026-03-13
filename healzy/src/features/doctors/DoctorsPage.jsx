@@ -2,11 +2,11 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, SlidersHorizontal, Star, X, ChevronDown, MessageSquare, ArrowLeft } from 'lucide-react';
-import { useT } from '../i18n/useT';
-import { Doctors, Chat } from '../services';
-import { useAuthStore } from '../store';
-import Avatar from '../components/common/Avatar';
-import Button from '../components/common/Button';
+import { useT } from '../../hooks/useT';
+import { Doctors, Chat } from '../../services';
+import { useAuthStore } from '../../features/auth/store';
+import Avatar from '../../components/Avatar';
+import Button from '../../components/Button';
 import styles from './DoctorsPage.module.css';
 import toast from 'react-hot-toast';
 
@@ -445,3 +445,4 @@ export function DoctorProfilePage() {
     </div>
   );
 }
+

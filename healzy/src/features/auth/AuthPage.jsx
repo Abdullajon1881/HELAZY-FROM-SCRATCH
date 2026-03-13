@@ -3,11 +3,11 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight, Stethoscope, HeartPulse } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { useAuthStore } from '../store';
-import { useT } from '../i18n/useT';
-import { Auth } from '../services';
-import Button from '../components/common/Button';
-import Input from '../components/common/Input';
+import { useAuthStore } from '../../features/auth/store';
+import { useT } from '../../hooks/useT';
+import { Auth } from '../../services';
+import Button from '../../components/Button';
+import Input from '../../components/Input';
 import styles from './AuthPage.module.css';
 
 // ─── Shared animated panel ────────────────────────────────────────────────────
@@ -381,3 +381,4 @@ export function ResetPasswordPage() {
     </AuthLayout>
   );
 }
+

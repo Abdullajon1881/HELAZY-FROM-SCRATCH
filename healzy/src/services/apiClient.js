@@ -1,4 +1,7 @@
 import axios from 'axios';
+import { useAuthStore } from '../features/auth/store';
+
+import axios from 'axios';
 import { useAuthStore } from './store';
 
 const API_BASE = '/api';
@@ -120,3 +123,4 @@ export const createChatWebSocket = (conversationId, token) => {
 };
 
 export default api;
+ 

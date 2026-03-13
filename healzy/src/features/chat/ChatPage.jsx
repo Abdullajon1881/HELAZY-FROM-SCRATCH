@@ -6,12 +6,13 @@ import {
   Check, CheckCheck, Search, Plus, X, ArrowLeft
 } from 'lucide-react';
 import { format, isToday, isYesterday } from 'date-fns';
-import { useT } from '../i18n/useT';
-import { useAuthStore, useChatStore } from '../store';
-import { Chat as ChatAPI } from '../services';
-import { USE_MOCK, MOCK_MESSAGES } from '../mockData';
-import { createChatWebSocket } from '../api';
-import Avatar from '../components/common/Avatar';
+import { useT } from '../../hooks/useT';
+import { useAuthStore } from '../../features/auth/store';
+import { useChatStore } from '../../features/chat/store';
+import { Chat as ChatAPI } from '../../services';
+import { USE_MOCK, MOCK_MESSAGES } from '../../services/mockData';
+import { createChatWebSocket } from '../../services/chatApi';
+import Avatar from '../../components/Avatar';
 import styles from './ChatPage.module.css';
 import toast from 'react-hot-toast';
 
@@ -461,3 +462,5 @@ export default function ChatPage() {
     </div>
   );
 }
+
+

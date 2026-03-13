@@ -7,10 +7,10 @@ import {
   Star, ArrowRight, ChevronRight, Play,
   Activity, Clock, Users, Award
 } from 'lucide-react';
-import { useT } from '../i18n/useT';
-import { Doctors } from '../services';
-import Avatar from '../components/common/Avatar';
-import Button from '../components/common/Button';
+import { useT } from '../../hooks/useT';
+import { Doctors } from '../../services';
+import Avatar from '../../components/Avatar';
+import Button from '../../components/Button';
 import styles from './HomePage.module.css';
 
 // Animated counter
@@ -357,3 +357,4 @@ export default function HomePage() {
     </div>
   );
 }
+
