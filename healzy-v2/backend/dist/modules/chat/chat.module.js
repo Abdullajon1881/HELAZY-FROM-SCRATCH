@@ -12,109 +12,12 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ChatModule = exports.ChatController = exports.ChatService = void 0;
+exports.ChatModule = exports.ChatController = void 0;
 const common_1 = require("@nestjs/common");
-const jwt_1 = require("@nestjs/jwt");
 const swagger_1 = require("@nestjs/swagger");
-const prisma_service_1 = require("../../database/prisma.service");
+const chat_service_1 = require("./chat.service");
 const chat_gateway_1 = require("./chat.gateway");
 const guards_1 = require("../../common/guards");
-let ChatService = class ChatService {
-    constructor(prisma) {
-        this.prisma = prisma;
-    }
-    async getMyConversations(userId, role) {
-        const where = role === 'PATIENT'
-            ? { patient: { userId } }
-            : { doctor: { userId } };
-        return this.prisma.conversation.findMany({
-            where,
-            orderBy: { updatedAt: 'desc' },
-            include: {
-                patient: { include: { user: { select: { firstName: true, lastName: true, avatar: true } } } },
-                doctor: { include: { user: { select: { firstName: true, lastName: true, avatar: true } } } },
-                messages: { take: 1, orderBy: { sentAt: 'desc' } },
-                _count: { select: { messages: { where: { isRead: false, sender: { NOT: { id: userId } } } } } },
-            },
-        });
-    }
-    async getMessages(conversationId, userId, page = 1, limit = 50) {
-        const ok = await this.canAccessConversation(userId, conversationId);
-        if (!ok)
-            throw new common_1.ForbiddenException();
-        const [messages, total] = await Promise.all([
-            this.prisma.message.findMany({
-                where: { conversationId },
-                skip: (page - 1) * limit,
-                take: limit,
-                orderBy: { sentAt: 'asc' },
-                include: { sender: { select: { id: true, firstName: true, lastName: true, avatar: true, role: true } } },
-            }),
-            this.prisma.message.count({ where: { conversationId } }),
-        ]);
-        return { messages, total, page, limit };
-    }
-    async createOrGetConversation(patientUserId, doctorId, appointmentId) {
-        const patient = await this.prisma.patient.findUnique({ where: { userId: patientUserId } });
-        if (!patient)
-            throw new common_1.NotFoundException('Patient not found');
-        const existing = await this.prisma.conversation.findFirst({
-            where: { patientId: patient.id, doctorId, ...(appointmentId && { appointmentId }) },
-        });
-        if (existing)
-            return existing;
-        return this.prisma.conversation.create({
-            data: { patientId: patient.id, doctorId, appointmentId },
-            include: {
-                patient: { include: { user: { select: { firstName: true, lastName: true, avatar: true } } } },
-                doctor: { include: { user: { select: { firstName: true, lastName: true, avatar: true } } } },
-            },
-        });
-    }
-    async createMessage(senderId, conversationId, text, fileUrl) {
-        const msg = await this.prisma.message.create({
-            data: { conversationId, senderId, text, fileUrl },
-            include: { sender: { select: { id: true, firstName: true, lastName: true, avatar: true, role: true } } },
-        });
-        await this.prisma.conversation.update({ where: { id: conversationId }, data: { updatedAt: new Date() } });
-        return msg;
-    }
-    async markMessagesRead(userId, conversationId) {
-        return this.prisma.message.updateMany({
-            where: { conversationId, senderId: { not: userId }, isRead: false },
-            data: { isRead: true, readAt: new Date() },
-        });
-    }
-    async canAccessConversation(userId, conversationId) {
-        const conv = await this.prisma.conversation.findUnique({
-            where: { id: conversationId },
-            include: { patient: true, doctor: true },
-        });
-        if (!conv)
-            return false;
-        return conv.patient.userId === userId || conv.doctor.userId === userId;
-    }
-    async getConversation(conversationId) {
-        return this.prisma.conversation.findUnique({
-            where: { id: conversationId },
-            include: {
-                patient: { include: { user: true } },
-                doctor: { include: { user: true } },
-            },
-        });
-    }
-    async endConversation(conversationId, userId) {
-        const ok = await this.canAccessConversation(userId, conversationId);
-        if (!ok)
-            throw new common_1.ForbiddenException();
-        return this.prisma.conversation.update({ where: { id: conversationId }, data: { status: 'ENDED' } });
-    }
-};
-exports.ChatService = ChatService;
-exports.ChatService = ChatService = __decorate([
-    (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
-], ChatService);
 let ChatController = class ChatController {
     constructor(chat) {
         this.chat = chat;
@@ -170,17 +73,16 @@ exports.ChatController = ChatController = __decorate([
     (0, swagger_1.ApiBearerAuth)(),
     (0, common_1.UseGuards)(guards_1.JwtAuthGuard),
     (0, common_1.Controller)('chat'),
-    __metadata("design:paramtypes", [ChatService])
+    __metadata("design:paramtypes", [chat_service_1.ChatService])
 ], ChatController);
 let ChatModule = class ChatModule {
 };
 exports.ChatModule = ChatModule;
 exports.ChatModule = ChatModule = __decorate([
     (0, common_1.Module)({
-        imports: [jwt_1.JwtModule.register({})],
         controllers: [ChatController],
-        providers: [ChatService, chat_gateway_1.ChatGateway],
-        exports: [ChatService],
+        providers: [chat_service_1.ChatService, chat_gateway_1.ChatGateway],
+        exports: [chat_service_1.ChatService],
     })
 ], ChatModule);
 //# sourceMappingURL=chat.module.js.map

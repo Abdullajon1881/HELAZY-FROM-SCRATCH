@@ -1,16 +1,14 @@
 import { OnGatewayConnection, OnGatewayDisconnect } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { ChatService } from './chat.module';
+import { ChatService } from './chat.service';
 export declare class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private chatService;
-    private jwt;
     private config;
     server: Server;
     private readonly logger;
     private onlineUsers;
-    constructor(chatService: ChatService, jwt: JwtService, config: ConfigService);
+    constructor(chatService: ChatService, config: ConfigService);
     handleConnection(client: Socket): Promise<void>;
     handleDisconnect(client: Socket): void;
     joinConversation(client: Socket, data: {
@@ -36,15 +34,15 @@ export declare class ChatGateway implements OnGatewayConnection, OnGatewayDiscon
         };
     } & {
         id: string;
-        sentAt: Date;
-        conversationId: string;
-        senderId: string;
         text: string;
         fileUrl: string | null;
         fileName: string | null;
         fileType: string | null;
         isRead: boolean;
         readAt: Date | null;
+        sentAt: Date;
+        conversationId: string;
+        senderId: string;
     }) | {
         error: string;
     }>;
