@@ -80,16 +80,43 @@ export default function AIPage() {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [activeSession?.messages, isGenerating]);
 
-  // Mock AI response generator
-  const getMockResponse = async (text: string, img?: string): Promise<string> => {
-    await new Promise((r) => setTimeout(r, 1200 + Math.random() * 800));
-    const lower = text.toLowerCase();
-    if (img) return `I've analyzed the image you uploaded.\n\n**Observation:** The image appears to show a skin/medical condition. While I can provide general guidance, please consult a dermatologist for a proper diagnosis.\n\n**Recommendation:** Monitor for changes in size, color, or texture. If there's any pain, bleeding, or rapid change, seek immediate medical attention.\n\n⚠️ *This is general information only. Please consult a qualified doctor.*`;
-    if (lower.includes('headache') || lower.includes('голова')) return `**Possible causes of your headache:**\n\n- **Tension headache** — most common, caused by stress or poor posture\n- **Dehydration** — try drinking 2–3 glasses of water\n- **Eye strain** — reduce screen time\n\n**Recommended actions:**\n1. Rest in a quiet, dark room\n2. Apply a cold compress\n3. Stay hydrated\n\n⚠️ *If severe, sudden, or with fever/vision changes — seek immediate care.*`;
-    if (lower.includes('blood pressure') || lower.includes('hypertension')) return `**Managing high blood pressure:**\n\n1. **Diet** — reduce sodium, eat fruits & vegetables (DASH diet)\n2. **Exercise** — 150 min/week of moderate activity\n3. **Weight management** — even 5kg loss helps\n4. **Limit alcohol** and quit smoking\n5. **Stress management** — meditation, yoga\n\nTarget: below 130/80 mmHg. Always follow your doctor's advice.\n\n⚠️ *Consult your doctor before changing medications.*`;
-    if (lower.includes('vitamin') || lower.includes('витамин')) return `**Essential daily vitamins:**\n\n- **Vitamin D** (1000–2000 IU) — most people are deficient\n- **Vitamin B12** (2.4 mcg) — especially for vegetarians\n- **Magnesium** (310–420 mg) — supports 300+ functions\n- **Omega-3** — heart & brain health\n- **Vitamin C** (75–90 mg) — immune support\n\n**Best source:** A balanced diet with whole foods. Supplements complement but don't replace good nutrition.\n\n⚠️ *Consult your doctor before starting supplements, especially if you take medications.*`;
-    return `Thank you for your question. Based on what you've described:\n\n1. **Monitor your symptoms** — note any changes\n2. **Stay hydrated** and get adequate rest\n3. **Avoid self-medicating** without professional guidance\n\nI recommend booking a consultation with one of our qualified doctors for proper diagnosis.\n\n⚠️ *This AI assistant provides general health information only. Always consult a qualified healthcare provider for medical decisions.*`;
-  };
+  /// Real API call to backend — Claude Sonnet 4.6
+const callAI = async (
+  text: string,
+  img?: string,
+  history: any[] = []
+): Promise<string> => {
+  const messages = [
+    ...history.map((m) => ({ role: m.role, content: m.content })),
+    {
+      role: 'user',
+      content: text,
+      ...(img && { imageBase64: img }),
+    },
+  ];
+
+  const token = localStorage.getItem('accessToken');
+
+  const res = await fetch('/api/ai/chat', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token && { Authorization: `Bearer ${token}` }),
+    },
+    body: JSON.stringify({
+      messages,
+      lang: localStorage.getItem('locale') || 'en',
+    }),
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || 'AI request failed');
+  }
+
+  const data = await res.json();
+  return data.message;
+};
 
   const sendMessage = async () => {
     if ((!input.trim() && !imageBase64) || isGenerating) return;
@@ -114,16 +141,29 @@ export default function AIPage() {
     setGenerating(true);
 
     try {
-      const response = await getMockResponse(capturedInput, capturedImage || undefined);
-      addMessage(sessionId, {
-        id: `msg-${Date.now()}-ai`,
-        role: 'assistant',
-        content: response,
-        createdAt: new Date().toISOString(),
-      });
-    } finally {
-      setGenerating(false);
-    }
+  const history = activeSession?.messages || [];
+  const response = await callAI(
+    capturedInput,
+    capturedImage || undefined,
+    history
+  );
+  addMessage(sessionId, {
+    id: `msg-${Date.now()}-ai`,
+    role: 'assistant',
+    content: response,
+    createdAt: new Date().toISOString(),
+  });
+} catch (err) {
+  addMessage(sessionId, {
+    id: `msg-${Date.now()}-err`,
+    role: 'assistant',
+    content:
+      '⚠️ Sorry, the AI assistant is temporarily unavailable. Please check your connection or try again shortly.',
+    createdAt: new Date().toISOString(),
+  });
+} finally {
+  setGenerating(false);
+}
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {

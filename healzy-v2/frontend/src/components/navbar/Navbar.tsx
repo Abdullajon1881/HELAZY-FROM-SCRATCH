@@ -23,6 +23,168 @@ const LOCALES: { code: Locale; label: string; flag: string }[] = [
   { code: 'uz', label: 'UZ', flag: '🇺🇿' },
 ];
 
+// ── Notifications Dropdown ────────────────────────────────────────────────────
+const MOCK_NOTIFICATIONS = [
+  {
+    id: '1',
+    title: 'Appointment confirmed',
+    body: 'Dr. Dilnoza Yusupova confirmed your appointment',
+    time: '2 min ago',
+    read: false,
+    type: 'appointment',
+  },
+  {
+    id: '2',
+    title: 'Reminder',
+    body: 'You have an appointment tomorrow at 10:00',
+    time: '1 hour ago',
+    read: false,
+    type: 'reminder',
+  },
+  {
+    id: '3',
+    title: 'Review request',
+    body: 'How was your consultation with Dr. Toshmatov?',
+    time: '2 days ago',
+    read: true,
+    type: 'review',
+  },
+];
+
+function NotificationsDropdown() {
+  const [open, setOpen] = useState(false);
+  const [notifications, setNotifications] = useState(MOCK_NOTIFICATIONS);
+  const ref = useRef<HTMLDivElement>(null);
+  const unread = notifications.filter((n) => !n.read).length;
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  const markAllRead = () =>
+    setNotifications((n) => n.map((x) => ({ ...x, read: true })));
+
+  const markRead = (id: string) =>
+    setNotifications((n) =>
+      n.map((x) => (x.id === id ? { ...x, read: true } : x))
+    );
+
+  const iconColor = (type: string) =>
+    ({
+      appointment: 'bg-primary-100 dark:bg-primary-900 text-primary-600',
+      reminder: 'bg-amber-100 dark:bg-amber-900 text-amber-600',
+      review: 'bg-violet-100 dark:bg-violet-900 text-violet-600',
+    }[type] || 'bg-slate-100 text-slate-600');
+
+  const iconEmoji = (type: string) =>
+    ({ appointment: '📅', reminder: '⏰', review: '⭐' }[type] || '🔔');
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        onClick={() => setOpen(!open)}
+        className="relative w-9 h-9 flex items-center justify-center rounded-xl text-[var(--text-secondary)] hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+        aria-label="Notifications"
+      >
+        <Bell className="w-4 h-4" />
+        {unread > 0 && (
+          <span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center">
+            {unread}
+          </span>
+        )}
+      </button>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: 6, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 6, scale: 0.97 }}
+            transition={{ duration: 0.15 }}
+            className="absolute right-0 top-full mt-1.5 w-80 bg-[var(--bg-secondary)] rounded-2xl border border-[var(--border-color)] shadow-dialog overflow-hidden z-50"
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border-color)]">
+              <div className="flex items-center gap-2">
+                <h3 className="font-semibold text-sm">Notifications</h3>
+                {unread > 0 && (
+                  <span className="px-1.5 py-0.5 rounded-full bg-primary-100 dark:bg-primary-900 text-primary-600 text-xs font-bold">
+                    {unread}
+                  </span>
+                )}
+              </div>
+              {unread > 0 && (
+                <button
+                  onClick={markAllRead}
+                  className="text-xs text-primary-600 hover:underline"
+                >
+                  Mark all read
+                </button>
+              )}
+            </div>
+
+            {/* List */}
+            <div className="max-h-72 overflow-y-auto">
+              {notifications.length === 0 ? (
+                <div className="py-8 text-center text-sm text-[var(--text-muted)]">
+                  No notifications
+                </div>
+              ) : (
+                notifications.map((n) => (
+                  <button
+                    key={n.id}
+                    onClick={() => markRead(n.id)}
+                    className={cn(
+                      'w-full flex items-start gap-3 px-4 py-3 text-left hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors border-b border-[var(--border-color)] last:border-0',
+                      !n.read && 'bg-primary-50/50 dark:bg-primary-950/20'
+                    )}
+                  >
+                    <div
+                      className={cn(
+                        'w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 text-sm',
+                        iconColor(n.type)
+                      )}
+                    >
+                      {iconEmoji(n.type)}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1.5">
+                        <p className="text-xs font-semibold truncate">{n.title}</p>
+                        {!n.read && (
+                          <span className="w-1.5 h-1.5 rounded-full bg-primary-500 flex-shrink-0" />
+                        )}
+                      </div>
+                      <p className="text-xs text-[var(--text-muted)] mt-0.5 line-clamp-2">
+                        {n.body}
+                      </p>
+                      <p className="text-[10px] text-[var(--text-muted)] mt-1">{n.time}</p>
+                    </div>
+                  </button>
+                ))
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="px-4 py-2.5 border-t border-[var(--border-color)]">
+              <Link
+                href="/notifications"
+                onClick={() => setOpen(false)}
+                className="text-xs text-primary-600 hover:underline"
+              >
+                View all notifications
+              </Link>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 export default function Navbar() {
   const { t } = useT();
   const pathname = usePathname();
@@ -68,7 +230,7 @@ export default function Navbar() {
 
   const getDashboardHref = () => {
     if (!user) return '/dashboard';
-    return `/dashboard/${user.role}`;
+    return `/dashboard/${user.role.toLowerCase()}`
   };
 
   return (

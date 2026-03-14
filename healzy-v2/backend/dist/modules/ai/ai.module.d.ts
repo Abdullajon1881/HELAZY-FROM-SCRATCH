@@ -25,35 +25,35 @@ export declare class AIService {
     textToSpeech(text: string, lang?: string): Promise<Buffer<ArrayBuffer>>;
     getSessions(userId: string): Promise<({
         messages: {
-            role: string;
+            content: string;
             id: string;
             createdAt: Date;
-            content: string;
             sessionId: string;
+            role: string;
             imageUrl: string | null;
         }[];
     } & {
-        title: string;
         id: string;
+        userId: string;
+        title: string;
         createdAt: Date;
         updatedAt: Date;
-        userId: string;
     })[]>;
     getSession(sessionId: string, userId: string): Promise<{
         messages: {
-            role: string;
+            content: string;
             id: string;
             createdAt: Date;
-            content: string;
             sessionId: string;
+            role: string;
             imageUrl: string | null;
         }[];
     } & {
-        title: string;
         id: string;
+        userId: string;
+        title: string;
         createdAt: Date;
         updatedAt: Date;
-        userId: string;
     }>;
     deleteSession(sessionId: string, userId: string): Promise<{
         success: boolean;
@@ -94,35 +94,35 @@ export declare class AIController {
     }, res: any): Promise<any>;
     getSessions(u: any): Promise<({
         messages: {
-            role: string;
+            content: string;
             id: string;
             createdAt: Date;
-            content: string;
             sessionId: string;
+            role: string;
             imageUrl: string | null;
         }[];
     } & {
-        title: string;
         id: string;
+        userId: string;
+        title: string;
         createdAt: Date;
         updatedAt: Date;
-        userId: string;
     })[]>;
     getSession(id: string, u: any): Promise<{
         messages: {
-            role: string;
+            content: string;
             id: string;
             createdAt: Date;
-            content: string;
             sessionId: string;
+            role: string;
             imageUrl: string | null;
         }[];
     } & {
-        title: string;
         id: string;
+        userId: string;
+        title: string;
         createdAt: Date;
         updatedAt: Date;
-        userId: string;
     }>;
     deleteSession(id: string, u: any): Promise<{
         success: boolean;
